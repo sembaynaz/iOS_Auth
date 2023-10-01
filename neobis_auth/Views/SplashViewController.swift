@@ -8,8 +8,8 @@
 import UIKit
 import SnapKit
 
+//MARK: UI Elements
 class SplashViewController: UIViewController {
-
     let logoImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -38,7 +38,7 @@ class SplashViewController: UIViewController {
         return label
     }()
     
-    let signupButton: UIButton = {
+    let signinButton: UIButton = {
         let button = UIButton()
         let font = UIFont(name: "GothamPro-Bold", size: 16)
         button.backgroundColor = nil
@@ -49,14 +49,10 @@ class SplashViewController: UIViewController {
         return button
     }()
     
-    let signinButton: UIButton = {
-        let button = UIButton()
-        let font = UIFont(name: "GothamPro-Bold", size: 16)
-        button.backgroundColor = UIColor(named: "Blue")
+    let signupButton: ActiveButton = {
+        let button = ActiveButton()
+        button.setActive(true)
         button.setTitle("Начать пользоваться", for: .normal)
-        button.titleLabel?.font = font
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -65,15 +61,30 @@ class SplashViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupUI()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationController?.customize()
     }
 }
 
+//MARK: Setup UI
 extension SplashViewController {
     func setupUI() {
-        setSignupButton()
         setSigninButton()
+        setSignupButton()
         setTitleLabel()
         setLogo()
+        
+        signupButton.addTarget(
+            self,
+            action: #selector(signupButtonTapped),
+            for: .touchUpInside
+        )
+        
+        signinButton.addTarget(
+            self,
+            action: #selector(signinButtonTapped),
+            for: .touchUpInside
+        )
     }
     
     func setLogo() {
@@ -87,17 +98,8 @@ extension SplashViewController {
     func setTitleLabel() {
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(signinButton.snp.top).offset(-64)
+            make.bottom.equalTo(signupButton.snp.top).offset(-64)
             make.horizontalEdges.equalToSuperview().inset(20)
-        }
-    }
-    
-    func setSigninButton() {
-        view.addSubview(signinButton)
-        signinButton.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview().inset(20)
-            make.height.equalTo(65)
-            make.bottom.equalTo(signupButton.snp.top).offset(-16)
         }
     }
     
@@ -106,7 +108,29 @@ extension SplashViewController {
         signupButton.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(20)
             make.height.equalTo(65)
+            make.bottom.equalTo(signinButton.snp.top).offset(-16)
+        }
+    }
+    
+    func setSigninButton() {
+        view.addSubview(signinButton)
+        signinButton.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.height.equalTo(65)
             make.bottom.equalTo(view.snp.bottom).offset(-44)
         }
+    }
+}
+
+//MARK: Functionality
+extension SplashViewController {
+    @objc func signupButtonTapped() {
+        let signupVC = SignupViewController()
+        navigationController?.show(signupVC, sender: self)
+    }
+    
+    @objc func signinButtonTapped() {
+        let signinVC = SigninViewController()
+        navigationController?.show(signinVC, sender: self)
     }
 }

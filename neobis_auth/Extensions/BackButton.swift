@@ -6,3 +6,14 @@
 //
 
 import Foundation
+import UIKit
+
+extension UINavigationController {
+    func customize(){
+        self.navigationBar.backIndicatorImage = UIImage(named: "Icon.arrow-left")
+        self.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "Icon.arrow-left")
+        
+        self.navigationBar.tintColor = UIColor(named: "Color.backButton")
+        
+    }
+}

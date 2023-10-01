@@ -7,43 +7,61 @@
 
 import Foundation
 import UIKit
-import SnapKit
 
 class TextField: UITextField, UITextFieldDelegate {
-    private var placeholderLabel: UILabel = {
-        let label = UILabel()
-        let font = UIFont(name: "GothamPro-Medium", size: 16)
-        label.font = font
-        label.textColor = UIColor(named: "Grey")
-        return label
-    }()
+    private var placeholderLabel: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupPlaceholderLabel()
-        delegate = self
+        setupTextField()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        placeholderLabel.text = placeholder
+        setupTextField()
+    }
+    
+    private func setupTextField() {
+        backgroundColor = UIColor(named: "GreyLight")
+        layer.cornerRadius = 8
+        font = UIFont(name: "GothamPro-Medium", size: 16)
+        
+        placeholderLabel = UILabel()
+        placeholderLabel.numberOfLines = 0
+        placeholderLabel.text = "Введите текст             "
+        placeholderLabel.font = UIFont(name: "GothamPro", size: 16)
+        placeholderLabel.textColor = UIColor.lightGray
         placeholderLabel.sizeToFit()
-        setupPlaceholderLabel()
-        delegate = self
-    }
-    
-    private func setupPlaceholderLabel() {
+        placeholderLabel.frame.origin = CGPoint(x: 10, y: 25)
         addSubview(placeholderLabel)
-        updatePlaceholderPosition()
+        
+        addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
     
-    private func updatePlaceholderPosition() {
-        let placeholderY: CGFloat = isEditing ? 5 : 25
-        placeholderLabel.font = UIFont(name: "GothamPro-Medium", size: 12)
-        placeholderLabel.frame.origin = CGPoint(x: 10, y: placeholderY)
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        if let text = textField.text, !text.isEmpty {
+            UIView.animate(withDuration: 0.3) {
+                self.placeholderLabel.frame.origin = CGPoint(x: 10, y: 13)
+                self.placeholderLabel.font = UIFont(name: "GothamPro", size: 12)
+            }
+        } else {
+            UIView.animate(withDuration: 0.3) {
+                self.placeholderLabel.font = UIFont(name: "GothamPro", size: 16)
+                self.placeholderLabel.frame.origin = CGPoint(x: 10, y: 25)
+            }
+        }
     }
     
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        updatePlaceholderPosition()
+    func setPlaceholderText(_ text: String) {
+        placeholderLabel.text = text
+    }
+    
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: UIEdgeInsets(top: 32, left: 10, bottom: 9, right: 10))
+    }
+    
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: UIEdgeInsets(top: 32, left: 10, bottom: 9, right: 10))
     }
 }
+
