@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class ActiveButton: UIButton {
-    var isActive: Bool = false
+    private var isActive: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)

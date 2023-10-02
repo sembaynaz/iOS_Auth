@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 
 class SignupViewController: UIViewController {
+    var email = ""
+    
     let logoImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -52,6 +54,17 @@ class SignupViewController: UIViewController {
         return button
     }()
     
+    let errorLabel: UILabel = {
+        let label = UILabel()
+        let font = UIFont(name: "GothamPro-Medium", size: 14)
+        label.font = font
+        label.isHidden = true
+        label.text = "Данная почта уже зарегистривана"
+        label.textColor = .red
+        label.numberOfLines = 0
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
@@ -63,10 +76,12 @@ extension SignupViewController {
     func setup() {
         view.backgroundColor = .white
         title = "Регистрация"
+        emailTextField.delegate = self
         
         setNextButton()
         setTitleLabel()
         setEmailTextField()
+        setErrorLabel()
         setLogoImage()
         hideKeyboardWhenTappedAround()
     }
@@ -105,9 +120,18 @@ extension SignupViewController {
             make.horizontalEdges.equalToSuperview().inset(20)
         }
     }
+    
+    func setErrorLabel() {
+        view.addSubview(errorLabel)
+        errorLabel.snp.makeConstraints { make in
+            make.top.equalTo(emailTextField.snp.bottom).offset(16)
+            make.centerX.equalTo(emailTextField.snp.centerX)
+        }
+    }
 }
+
 //MARK: Functionality
-extension SignupViewController {
+extension SignupViewController: UITextFieldDelegate {
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -116,5 +140,44 @@ extension SignupViewController {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc func nextButtonTapped() {
+        let updatedText = emailTextField.text ?? ""
+        
+        let alertVC = AlertViewController()
+        alertVC.emailLabel = updatedText
+        alertVC.modalPresentationStyle = .overFullScreen
+        present(alertVC, animated: false)
+    }
+    
+    func isValidEmail(email: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = textField.text,
+              let range = Range(range, in: currentText) else {
+            return true
+        }
+        
+        let updatedText = currentText.replacingCharacters(in: range, with: string)
+        let isValid = isValidEmail(email: updatedText)
+        nextButton.setActive(isValid)
+        emailTextField.isEror(!isValid)
+        
+        if updatedText.isEmpty {
+            errorLabel.isHidden = true
+        } else {
+            if isValid {
+                nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
+                errorLabel.isHidden = true
+            } else {
+                errorLabel.isHidden = false
+            }
+        }
+        return true
     }
 }

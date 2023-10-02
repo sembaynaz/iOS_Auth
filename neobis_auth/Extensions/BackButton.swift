@@ -14,6 +14,5 @@ extension UINavigationController {
         self.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "Icon.arrow-left")
         
         self.navigationBar.tintColor = UIColor(named: "Color.backButton")
-        
     }
 }

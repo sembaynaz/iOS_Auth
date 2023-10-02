@@ -23,6 +23,8 @@
 		6F12ED792AC9D20F003D167A /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F12ED782AC9D20F003D167A /* SignupViewController.swift */; };
 		6F12ED7B2AC9D235003D167A /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F12ED7A2AC9D235003D167A /* ChangePasswordViewController.swift */; };
 		6F12ED7D2AC9D282003D167A /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F12ED7C2AC9D282003D167A /* UserInfoViewController.swift */; };
+		6F12ED812AC9F650003D167A /* CreatePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F12ED802AC9F650003D167A /* CreatePasswordViewController.swift */; };
+		6F8792B42ACB164E008B910A /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8792B32ACB164E008B910A /* AlertViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		6F12ED782AC9D20F003D167A /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		6F12ED7A2AC9D235003D167A /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		6F12ED7C2AC9D282003D167A /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
+		6F12ED802AC9F650003D167A /* CreatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePasswordViewController.swift; sourceTree = "<group>"; };
+		6F8792B32ACB164E008B910A /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		83EC08DECF9F68139040442E /* Pods_neobis_auth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_neobis_auth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D433229E7EF86FA1809401C4 /* Pods-neobis_auth.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-neobis_auth.debug.xcconfig"; path = "Target Support Files/Pods-neobis_auth/Pods-neobis_auth.debug.xcconfig"; sourceTree = "<group>"; };
 		F295571BE5578DEB79D05D7C /* Pods-neobis_auth.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-neobis_auth.release.xcconfig"; path = "Target Support Files/Pods-neobis_auth/Pods-neobis_auth.release.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 				6F12ED782AC9D20F003D167A /* SignupViewController.swift */,
 				6F12ED7A2AC9D235003D167A /* ChangePasswordViewController.swift */,
 				6F12ED7C2AC9D282003D167A /* UserInfoViewController.swift */,
+				6F12ED802AC9F650003D167A /* CreatePasswordViewController.swift */,
+				6F8792B32ACB164E008B910A /* AlertViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -306,7 +312,9 @@
 				6F12ED722AC9A927003D167A /* BackButton.swift in Sources */,
 				6F12ED7D2AC9D282003D167A /* UserInfoViewController.swift in Sources */,
 				6F12ED4D2AC983A5003D167A /* AppDelegate.swift in Sources */,
+				6F8792B42ACB164E008B910A /* AlertViewController.swift in Sources */,
 				6F12ED772AC9D205003D167A /* SigninViewController.swift in Sources */,
+				6F12ED812AC9F650003D167A /* CreatePasswordViewController.swift in Sources */,
 				6F12ED4F2AC983A5003D167A /* SceneDelegate.swift in Sources */,
 				6F12ED6E2AC9A909003D167A /* TextField.swift in Sources */,
 			);
