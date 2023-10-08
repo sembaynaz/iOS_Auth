@@ -39,8 +39,8 @@ class SignupViewController: UIViewController {
         return textfield
     }()
     
-    let nextButton: ActiveButton = {
-        let button = ActiveButton()
+    let nextButton: Button = {
+        let button = Button()
         button.setActive(false)
         button.setTitle("Далее", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

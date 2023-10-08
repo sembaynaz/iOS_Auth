@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ChangePasswordViewController: UIViewController {
+class CreateChangePasswordViewController: UIViewController {
     
     var firstPasswordTextField: TextField = {
        let textField = TextField()
@@ -24,8 +24,8 @@ class ChangePasswordViewController: UIViewController {
         textField.setPasswordTextField(true)
         return textField
     }()
-    let signupButton: ActiveButton = {
-        let button = ActiveButton()
+    let signupButton: Button = {
+        let button = Button()
         button.setActive(false)
         button.setTitle("Далее", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -78,8 +78,8 @@ class ChangePasswordViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    @objc var nextButton: ActiveButton = {
-        let button = ActiveButton()
+    @objc var nextButton: Button = {
+        let button = Button()
         button.setActive(false)
         button.setTitle("Далее", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -93,7 +93,7 @@ class ChangePasswordViewController: UIViewController {
     
 }
 
-extension ChangePasswordViewController {
+extension CreateChangePasswordViewController {
     func setup() {
         view.backgroundColor = .white
         title = "Создать пароль"
@@ -145,7 +145,7 @@ extension ChangePasswordViewController {
     }
 }
 
-extension ChangePasswordViewController {
+extension CreateChangePasswordViewController {
     @objc private func textFieldDidChange(_ textField: UITextField) {
         var count = 0
         
@@ -173,7 +173,9 @@ extension ChangePasswordViewController {
             }
         }
         
-        if let text = secondPasswordTextField.text, text == firstPasswordTextField.text {
+        if let text = secondPasswordTextField.text, text == firstPasswordTextField.text &&
+            (!secondPasswordTextField.text!.isEmpty && !firstPasswordTextField.text!.isEmpty) {
+            
             casePasswordsMathesLabel.textColor = UIColor(named: "Blue")
             count += 1
         } else {

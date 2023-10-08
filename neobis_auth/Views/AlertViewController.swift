@@ -50,8 +50,8 @@ class AlertViewController: UIViewController {
         return label
     }()
 
-    let closeButton: ActiveButton = {
-        let button = ActiveButton()
+    let closeButton: Button = {
+        let button = Button()
         button.setActive(true)
         button.setTitle("Закрыть", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

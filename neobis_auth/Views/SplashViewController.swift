@@ -44,8 +44,8 @@ class SplashViewController: UIViewController {
         return button
     }()
     
-    let signupButton: ActiveButton = {
-        let button = ActiveButton()
+    let signupButton: Button = {
+        let button = Button()
         button.setActive(true)
         button.setTitle("Начать пользоваться", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

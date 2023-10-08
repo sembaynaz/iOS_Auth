@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ActiveButton: UIButton {
+class Button: UIButton {
     private var isActive: Bool = false
     
     override init(frame: CGRect) {
@@ -20,8 +20,10 @@ class ActiveButton: UIButton {
         super.init(coder: coder)
         custumize()
     }
-    
-    func custumize() {
+}
+
+extension Button {
+    private func custumize() {
         let font = UIFont(name: "GothamPro-Bold", size: 16)
         titleLabel?.font = font
         layer.cornerRadius = 16
@@ -37,7 +39,9 @@ class ActiveButton: UIButton {
             for: .normal
         )
     }
-    
+}
+
+extension Button {
     func setActive(_ isActive: Bool) {
         self.isActive = isActive
         custumize()

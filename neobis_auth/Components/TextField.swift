@@ -33,7 +33,9 @@ class TextField: UITextField, UITextFieldDelegate {
         setupTextField()
         setupTextFieldPlaceholder()
     }
-    
+}
+
+extension TextField {
     private func setupTextFieldPlaceholder() {
         placeholderLabel = UILabel()
         placeholderLabel.numberOfLines = 0
@@ -52,7 +54,7 @@ class TextField: UITextField, UITextFieldDelegate {
         layer.cornerRadius = 8
         font = UIFont(name: "GothamPro-Medium", size: 16)
         layer.borderWidth = 1
-        layer.borderColor = isError ? UIColor.red.cgColor : UIColor(named: "GreyLight")?.cgColor 
+        layer.borderColor = isError ? UIColor.red.cgColor : UIColor(named: "GreyLight")?.cgColor
         textColor = isError ? .red : .black
         
         if isPassword {
@@ -99,6 +101,12 @@ class TextField: UITextField, UITextFieldDelegate {
     override func editingRect (forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(top: 32, left: 10, bottom: 9, right: 50))
     }
+    
+    @objc private func showPasswordButtonTapped () {
+        isSecureTextEntry.toggle()
+        let imageName = isSecureTextEntry ? "Secure" : "Show"
+        showPasswordButton.setImage(UIImage(named: imageName), for: .normal)
+    }
 }
 
 extension TextField {
@@ -122,10 +130,11 @@ extension TextField {
         textFieldDidChange(self)
     }
     
-    @objc func showPasswordButtonTapped () {
-        isSecureTextEntry.toggle()
-        let imageName = isSecureTextEntry ? "Secure" : "Show"
-        showPasswordButton.setImage(UIImage(named: imageName), for: .normal)
+    func placesolderToTop() {
+        UIView.animate(withDuration: 0.3) {
+            self.placeholderLabel.frame.origin = CGPoint(x: 10, y: 13)
+            self.placeholderLabel.font = UIFont(name: "GothamPro", size: 12)
+        }
     }
 }
 
