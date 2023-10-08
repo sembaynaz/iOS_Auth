@@ -8,9 +8,7 @@
 import UIKit
 import SnapKit
 
-class SignupViewController: UIViewController {
-    var email = ""
-    
+class SignupViewController: UIViewController {    
     let logoImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -25,15 +23,10 @@ class SignupViewController: UIViewController {
         label.text = "Смейся \nи улыбайся \nкаждый день"
         label.textColor = UIColor(named: "Blue")
         label.numberOfLines = 0
-        let lineHeight: CGFloat = 40 * 1.2
-        let attributedString = NSMutableAttributedString(string: label.text ?? "")
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = lineHeight - label.font.lineHeight
-        attributedString.addAttribute(
-            .paragraphStyle,
-            value: paragraphStyle,
-            range: NSMakeRange(0, attributedString.length)
-        )
+        paragraphStyle.lineSpacing = 10
+        let attributedString = NSMutableAttributedString(string: label.text!)
+        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
         label.attributedText = attributedString
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -146,7 +139,7 @@ extension SignupViewController: UITextFieldDelegate {
         let updatedText = emailTextField.text ?? ""
         
         let alertVC = AlertViewController()
-        alertVC.emailLabel = updatedText
+        alertVC.emailText = updatedText
         alertVC.modalPresentationStyle = .overFullScreen
         present(alertVC, animated: false)
     }

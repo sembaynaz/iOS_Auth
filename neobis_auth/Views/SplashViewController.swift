@@ -24,15 +24,10 @@ class SplashViewController: UIViewController {
         label.text = "Смейся \nи улыбайся \nкаждый день"
         label.textColor = UIColor(named: "Blue")
         label.numberOfLines = 0
-        let lineHeight: CGFloat = 40 * 1.2
-        let attributedString = NSMutableAttributedString(string: label.text ?? "")
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = lineHeight - label.font.lineHeight
-        attributedString.addAttribute(
-            .paragraphStyle,
-            value: paragraphStyle,
-            range: NSMakeRange(0, attributedString.length)
-        )
+        paragraphStyle.lineSpacing = 10
+        let attributedString = NSMutableAttributedString(string: label.text!)
+        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
         label.attributedText = attributedString
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

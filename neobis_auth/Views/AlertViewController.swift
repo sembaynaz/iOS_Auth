@@ -10,7 +10,7 @@ import UIKit
 class AlertViewController: UIViewController {
     
     var viewTranslation = CGPoint(x: 0, y: 0)
-    var emailLabel = ""
+    var emailText = ""
 
     let backgroundView: UIView = {
         let view = UIView()
@@ -47,7 +47,6 @@ class AlertViewController: UIViewController {
             range: NSMakeRange(0, attributedString.length)
         )
         label.attributedText = attributedString
-        
         return label
     }()
 
@@ -79,6 +78,12 @@ extension AlertViewController {
         setCloseButton()
         setMessageLabel()
         setLogoImage()
+        
+        closeButton.addTarget(
+            self,
+            action: #selector(closeButtonTapped),
+            for: .touchUpInside
+        )
     }
     func setBackgroundView() {
         view.addSubview(backgroundView)
@@ -99,11 +104,11 @@ extension AlertViewController {
     }
 
     func setMessageLabel() {
-        let message = "На вашу почту \n«\(emailLabel)» было \nотправлено письмо"
+        let message = "На вашу почту \n«\(emailText)» было \nотправлено письмо"
         messageLabel.text = message
         let attributedString = NSMutableAttributedString(string: message)
-        if let emailRange = message.range(of: "\(emailLabel)") {
-            attributedString.addAttribute(.foregroundColor, value: UIColor(named: "Blue"), range: NSRange(emailRange, in: message))
+        if let emailRange = message.range(of: "\(emailText)") {
+            attributedString.addAttribute(.foregroundColor, value: UIColor(named: "Blue")!, range: NSRange(emailRange, in: message))
         }
         messageLabel.attributedText = attributedString
         backgroundView.addSubview(messageLabel)
@@ -126,8 +131,10 @@ extension AlertViewController {
 //MARK: Functionality
 extension AlertViewController {
     @objc func closeButtonTapped() {
-        let alertVC = AlertViewController()
-        alertVC.modalPresentationStyle = .overFullScreen
-        present(alertVC, animated: false)
+        let userInfoVC = UserInfoViewController()
+        userInfoVC.modalPresentationStyle = .fullScreen
+        userInfoVC.user.email = emailText
+        self.view.window?.rootViewController = UINavigationController(rootViewController: userInfoVC)
+        self.view.window?.makeKeyAndVisible()
     }
 }
