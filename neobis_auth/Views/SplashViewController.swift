@@ -16,7 +16,6 @@ class SplashViewController: UIViewController {
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
-    
     let titleLabel: UILabel = {
         let label = UILabel()
         let font = UIFont(name: "GothamPro-Medium", size: 40)
@@ -32,7 +31,6 @@ class SplashViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
     let signinButton: UIButton = {
         let button = UIButton()
         let font = UIFont(name: "GothamPro-Bold", size: 16)
@@ -43,7 +41,6 @@ class SplashViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
     let signupButton: Button = {
         let button = Button()
         button.setActive(true)
@@ -120,7 +117,7 @@ extension SplashViewController {
 //MARK: Functionality
 extension SplashViewController {
     @objc func signupButtonTapped() {
-        let signupVC = SignupViewController()
+        let signupVC = SignupAndCheckEmailViewController()
         navigationController?.show(signupVC, sender: self)
     }
     

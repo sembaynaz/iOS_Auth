@@ -8,7 +8,9 @@
 import UIKit
 import SnapKit
 
-class SignupViewController: UIViewController {    
+class SignupAndCheckEmailViewController: UIViewController {
+    var isPasswordChange = false
+    
     let logoImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -65,11 +67,16 @@ class SignupViewController: UIViewController {
     
 }
 
-extension SignupViewController {
+extension SignupAndCheckEmailViewController {
     func setup() {
         view.backgroundColor = .white
-        title = "Регистрация"
         emailTextField.delegate = self
+        
+        if isPasswordChange {
+            title = "Сброс пароля"
+        } else {
+            title = "Регистрация"
+        }
         
         setNextButton()
         setTitleLabel()
@@ -124,7 +131,7 @@ extension SignupViewController {
 }
 
 //MARK: Functionality
-extension SignupViewController: UITextFieldDelegate {
+extension SignupAndCheckEmailViewController: UITextFieldDelegate {
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -140,6 +147,7 @@ extension SignupViewController: UITextFieldDelegate {
         
         let alertVC = AlertViewController()
         alertVC.emailText = updatedText
+        alertVC.isPasswordChange = self.isPasswordChange
         alertVC.modalPresentationStyle = .overFullScreen
         present(alertVC, animated: false)
     }

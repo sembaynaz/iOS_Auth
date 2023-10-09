@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import UserNotifications
 
 class CreateChangePasswordViewController: UIViewController {
+    var isPasswordChange = false
     
     var firstPasswordTextField: TextField = {
        let textField = TextField()
@@ -96,11 +98,11 @@ class CreateChangePasswordViewController: UIViewController {
 extension CreateChangePasswordViewController {
     func setup() {
         view.backgroundColor = .white
-        title = "Создать пароль"
         setFirstPasswordTextField()
         setSecondPasswordTextField()
         setStackCaseLabels()
         setNextButton()
+        hideKeyboardWhenTappedAround()
     }
     func setFirstPasswordTextField () {
         view.addSubview(firstPasswordTextField)
@@ -136,7 +138,7 @@ extension CreateChangePasswordViewController {
     
     func setNextButton() {
         view.addSubview(nextButton)
-        
+    
         nextButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.keyboardLayoutGuide.snp.top).offset(-16)
             make.height.equalTo(65)
@@ -146,6 +148,16 @@ extension CreateChangePasswordViewController {
 }
 
 extension CreateChangePasswordViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         var count = 0
         
@@ -184,8 +196,52 @@ extension CreateChangePasswordViewController {
         
         if count == 4 {
             nextButton.setActive(true)
+            nextButton.addTarget(
+                self,
+                action: #selector(nextButtonTapped),
+                for: .touchUpInside
+            )
         } else {
             nextButton.setActive(false)
         }
+    }
+    
+    @objc func nextButtonTapped() {
+        if isPasswordChange {
+            
+                // Получите изображение из assets вашего проекта
+            if let imageURL = Bundle.main.url(forResource: "Bell", withExtension: "png") {
+                do {
+                        // Создайте UNNotificationAttachment
+                    let attachment = try UNNotificationAttachment(identifier: "image", url: imageURL, options: nil)
+                    
+                        // Создайте содержимое уведомления
+                    let content = UNMutableNotificationContent()
+                    content.title = "Заголовок уведомления"
+                    content.body = "Текст уведомления"
+                    content.sound = UNNotificationSound.default
+                    content.attachments = [attachment] // Добавьте изображение к уведомлению
+                    
+                        // Создайте запрос уведомления
+                    let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: nil)
+                    
+                        // Добавьте запрос уведомления в центр уведомлений
+                    UNUserNotificationCenter.current().add(request) { error in
+                        if let error = error {
+                            print("Ошибка при добавлении уведомления: \(error)")
+                        } else {
+                            print("Уведомление успешно добавлено")
+                        }
+                    }
+                } catch {
+                    print("Ошибка при создании вложения уведомления: \(error)")
+                }
+            }
+
+        }
+        
+        let signinVC = SigninViewController()
+        signinVC.modalPresentationStyle = .fullScreen
+        present(signinVC, animated: true)
     }
 }

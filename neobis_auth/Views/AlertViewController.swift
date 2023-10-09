@@ -8,7 +8,7 @@
 import UIKit
 
 class AlertViewController: UIViewController {
-    
+    var isPasswordChange = false
     var viewTranslation = CGPoint(x: 0, y: 0)
     var emailText = ""
 
@@ -131,10 +131,18 @@ extension AlertViewController {
 //MARK: Functionality
 extension AlertViewController {
     @objc func closeButtonTapped() {
-        let userInfoVC = UserInfoViewController()
-        userInfoVC.modalPresentationStyle = .fullScreen
-        userInfoVC.user.email = emailText
-        self.view.window?.rootViewController = UINavigationController(rootViewController: userInfoVC)
-        self.view.window?.makeKeyAndVisible()
+        if isPasswordChange {
+            let passwordVC = CreateChangePasswordViewController()
+            passwordVC.title = "Сброс пароля"
+            passwordVC.isPasswordChange = self.isPasswordChange
+            passwordVC.modalPresentationStyle = .fullScreen
+            present(passwordVC, animated: true)
+        } else {
+            let userInfoVC = UserInfoViewController()
+            userInfoVC.modalPresentationStyle = .fullScreen
+            userInfoVC.viewModel.user.email = emailText
+            self.view.window?.rootViewController = UINavigationController(rootViewController: userInfoVC)
+            self.view.window?.makeKeyAndVisible()
+        }
     }
 }

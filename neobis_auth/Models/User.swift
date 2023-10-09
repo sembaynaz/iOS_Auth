@@ -12,4 +12,5 @@ struct User {
     var lastName: String = ""
     var birthDate: String = ""
     var email: String = ""
+    var passwowrd: String = ""
 }

@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 class UserInfoViewController: UIViewController {
-    var user = User()
+    let viewModel: UserViewModel
+    var dateFormate = Bool()
     
     var nameTextField: TextField = {
         let textfield = TextField()
@@ -57,6 +58,15 @@ class UserInfoViewController: UIViewController {
         super.viewDidLoad()
         setup()
     }
+    
+    init(_ viewModel: UserViewModel = UserViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 extension UserInfoViewController {
@@ -70,11 +80,7 @@ extension UserInfoViewController {
         setSecondNameTextField()
         setBirthDateTextField()
         setEmailTextField()
-        signupButton.addTarget(
-            self,
-            action: #selector(signupButtonTapped),
-            for: .touchUpInside
-        )
+        hideKeyboardWhenTappedAround()
     }
     func setStackTextFields() {
         view.addSubview(stackTextFields)
@@ -114,12 +120,16 @@ extension UserInfoViewController {
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
-        emailTextField.setTextToTextField(user.email)
+        emailTextField.setTextToTextField(viewModel.user.email)
         stackTextFields.addArrangedSubview(emailTextField)
     }
     func setSignupButton() {
         view.addSubview(signupButton)
-        
+        signupButton.addTarget(
+            self,
+            action: #selector(signupButtonTapped),
+            for: .touchUpInside
+        )
         signupButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.keyboardLayoutGuide.snp.top).offset(-16)
             make.height.equalTo(65)
@@ -129,25 +139,35 @@ extension UserInfoViewController {
 }
 
 extension UserInfoViewController: UITextFieldDelegate {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
     @objc func signupButtonTapped() {
         saveUserData()
         handleBirthDateInput()
         let changePasswordVC = CreateChangePasswordViewController()
+        changePasswordVC.title = "Создать пароль"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.customize()
         navigationController?.show(changePasswordVC, sender: self)
     }
     
     func saveUserData() {
-        print("Имя: \(user.name)")
-        print("Фамилия: \(user.lastName)")
-        print("Email: \(user.email)")
-        print("Дата рождения: \(user.birthDate)")
+        print("Имя: \(viewModel.user.name)")
+        print("Фамилия: \(viewModel.user.lastName)")
+        print("Email: \(viewModel.user.email)")
+        print("Дата рождения: \(viewModel.user.birthDate)")
         
-        user.birthDate = birthDateTextField.text!
-        user.name = nameTextField.text!
-        user.lastName = lastNameTextField.text!
-        user.email = emailTextField.text!
+        viewModel.user.birthDate = birthDateTextField.text!
+        viewModel.user.name = nameTextField.text!
+        viewModel.user.lastName = lastNameTextField.text!
+        viewModel.user.email = emailTextField.text!
     }
     
     func handleBirthDateInput() {
@@ -161,26 +181,26 @@ extension UserInfoViewController: UITextFieldDelegate {
         guard let currentText = birthDateTextField.text as NSString? else {
             return false
         }
-        
+
         let allowedCharacterSet = CharacterSet(charactersIn: "0123456789")
         let characterSet = CharacterSet(charactersIn: string)
         let isNumber = allowedCharacterSet.isSuperset(of: characterSet)
         let newText = currentText.replacingCharacters(in: range, with: string)
-        
+
         if string.isEmpty {
             return true
         }
-        
+
         let newLength = newText.count
         if isNumber && newLength <= 10 {
             let formattedText = formatPhoneNumber(text: newText)
-            textField.text = formattedText
-            
+            birthDateTextField.text = formattedText
+
             if newLength == 1 {
                 birthDateTextField.placesolderToTop()
             }
         }
-        
+
         return false
     }
 
@@ -195,17 +215,6 @@ extension UserInfoViewController: UITextFieldDelegate {
                 self,
                 action: #selector(signupButtonTapped),
                 for: .touchUpInside
-            )
-            
-            print(
-                !emailTextField.text!.isEmpty,
-                !nameTextField.text!.isEmpty,
-                !lastNameTextField.text!.isEmpty,
-                !birthDateTextField.text!.isEmpty,
-                emailTextField.text!,
-                nameTextField.text!,
-                lastNameTextField.text!,
-                birthDateTextField.text!
             )
         } else {
             signupButton.setActive(false)
