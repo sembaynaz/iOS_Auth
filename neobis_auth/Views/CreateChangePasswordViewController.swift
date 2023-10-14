@@ -70,7 +70,7 @@ class CreateChangePasswordViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    let casePasswordsMathesLabel: UILabel = {
+    let casePasswordsMachesLabel: UILabel = {
         let label = UILabel()
         let font = UIFont(name: "GothamPro-Medium", size: 16)
         label.font = font
@@ -131,7 +131,7 @@ extension CreateChangePasswordViewController {
         stackCaseLabels.addArrangedSubview(caseUpperCharacterLabel)
         stackCaseLabels.addArrangedSubview(caseDigitsCharacterLabel)
         stackCaseLabels.addArrangedSubview(caseSymbolLabel)
-        stackCaseLabels.addArrangedSubview(casePasswordsMathesLabel)
+        stackCaseLabels.addArrangedSubview(casePasswordsMachesLabel)
         
         stackCaseLabels.snp.makeConstraints { make in
             make.top.equalTo(secondPasswordTextField.snp.bottom).offset(40)
@@ -181,10 +181,10 @@ extension CreateChangePasswordViewController {
         if let text = secondPasswordTextField.text, text == firstPasswordTextField.text &&
             (!secondPasswordTextField.text!.isEmpty && !firstPasswordTextField.text!.isEmpty) {
             
-            casePasswordsMathesLabel.textColor = UIColor(named: "Blue")
+            casePasswordsMachesLabel.textColor = UIColor(named: "Blue")
             count += 1
         } else {
-            casePasswordsMathesLabel.textColor = UIColor(named: "Grey")
+            casePasswordsMachesLabel.textColor = UIColor(named: "Grey")
         }
         
         if count == 4 {
@@ -220,3 +220,6 @@ extension CreateChangePasswordViewController {
         view.endEditing(true)
     }
 }
+/*
+ 
+ */

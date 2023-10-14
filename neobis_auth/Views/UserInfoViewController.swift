@@ -27,6 +27,7 @@ class UserInfoViewController: UIViewController {
     var birthDateTextField: TextField = {
         let textfield = TextField()
         textfield.setPlaceholderText("Дата рождения")
+        textfield.keyboardType = .numberPad
         textfield.translatesAutoresizingMaskIntoConstraints = false
         return textfield
     }()
@@ -51,43 +52,6 @@ class UserInfoViewController: UIViewController {
         stack.spacing = 24
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
-    }()
-    lazy var datePicker: UIDatePicker = {
-        let datePicker = UIDatePicker(frame: .zero)
-        
-        datePicker.datePickerMode = .date
-        datePicker.timeZone = TimeZone.current
-        datePicker.locale = .autoupdatingCurrent
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat =  "dd.MM.yyyy"
-        let currentDate = Date()
-        let dateString = dateFormatter.string(from: currentDate)
-        self.dateString = dateString
-        datePicker.date = currentDate
-        
-        datePicker.preferredDatePickerStyle = .wheels
-        datePicker.addTarget(self, action: #selector(handleDatePicker(sender:)), for: .valueChanged)
-        
-        return datePicker
-    }()
-    
-    lazy var toolbar: UIToolbar = {
-        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        doneToolbar.barStyle = .default
-        
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let done: UIBarButtonItem = UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(doneButtonAction))
-        
-        done.setTitleTextAttributes([
-            .foregroundColor: UIColor.link
-        ], for: .normal)
-        
-        let items = [flexSpace, done]
-        doneToolbar.items = items
-        doneToolbar.sizeToFit()
-        
-        return doneToolbar
     }()
 
     override func viewDidLoad() {
@@ -148,8 +112,7 @@ extension UserInfoViewController {
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
-        birthDateTextField.inputView = datePicker
-        birthDateTextField.inputAccessoryView = toolbar
+        
         stackTextFields.addArrangedSubview(birthDateTextField)
     }
     func setEmailTextField() {
@@ -204,24 +167,49 @@ extension UserInfoViewController: UITextFieldDelegate {
         )
     }
     
-    @objc func handleDatePicker(sender: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        
-        dateString = dateFormatter.string(from: sender.date)
-        dateFormat()
-        
-        textFieldDidChange(birthDateTextField)
-    }
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let currentText = birthDateTextField.text as NSString? else {
+            return false
+        }
     
-    @objc func doneButtonAction(){
-        birthDateTextField.setTextToTextField(dateString)
-        textFieldDidChange(birthDateTextField)
-        birthDateTextField.resignFirstResponder()
+        let allowedCharacterSet = CharacterSet(charactersIn: "0123456789")
+        let characterSet = CharacterSet(charactersIn: string)
+        let isNumber = allowedCharacterSet.isSuperset(of: characterSet)
+        let newText = currentText.replacingCharacters(in: range, with: string)
+        
+        
+        if string.isEmpty {
+            return true
+        }
+        
+        
+        let newLength = newText.count
+        if isNumber && newLength <= 10 {
+            let formattedText = formatNumber(text: newText)
+            textField.text = formattedText
+            
+            birthDateTextField.setTextToTextField(formattedText)
+            textFieldDidChange(birthDateTextField)
+        }
+        
+        
+        return false
     }
-    
-    func dateFormat() {
-        birthDateTextField.setTextToTextField(dateString)
+    func handleBirthDateInput() {
+        if let text = birthDateTextField.text, text.count == 8 {
+            let formattedText = "\(text.prefix(2)).\(text.dropFirst(2).prefix(2)).\(text.dropFirst(4))"
+            birthDateTextField.text = formattedText
+        }
+    }
+    func formatNumber(text: String) -> String {
+        var formattedText = text.replacingOccurrences(of: ".", with: "")
+        if formattedText.count >= 2 {
+            formattedText.insert(".", at: formattedText.index(formattedText.startIndex, offsetBy: 2))
+        }
+        if formattedText.count >= 5 {
+            formattedText.insert(".", at: formattedText.index(formattedText.startIndex, offsetBy: 5))
+        }
+        return formattedText
     }
 }
 
