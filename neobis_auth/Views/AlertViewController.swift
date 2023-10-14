@@ -134,9 +134,13 @@ extension AlertViewController {
         if isPasswordChange {
             let passwordVC = CreateChangePasswordViewController()
             passwordVC.title = "Сброс пароля"
-            passwordVC.isPasswordChange = self.isPasswordChange
+            if isPasswordChange {
+                passwordVC.isPasswordChange = self.isPasswordChange
+            }
+            isPasswordChange = false
             passwordVC.modalPresentationStyle = .fullScreen
-            present(passwordVC, animated: true)
+            self.view.window?.rootViewController = UINavigationController(rootViewController: passwordVC)
+            self.view.window?.makeKeyAndVisible()
         } else {
             let userInfoVC = UserInfoViewController()
             userInfoVC.modalPresentationStyle = .fullScreen

@@ -10,7 +10,7 @@ import SnapKit
 
 class UserInfoViewController: UIViewController {
     let viewModel: UserViewModel
-    var dateFormate = Bool()
+    var dateString = ""
     
     var nameTextField: TextField = {
         let textfield = TextField()
@@ -27,7 +27,6 @@ class UserInfoViewController: UIViewController {
     var birthDateTextField: TextField = {
         let textfield = TextField()
         textfield.setPlaceholderText("Дата рождения")
-        textfield.keyboardType = .numberPad
         textfield.translatesAutoresizingMaskIntoConstraints = false
         return textfield
     }()
@@ -52,6 +51,43 @@ class UserInfoViewController: UIViewController {
         stack.spacing = 24
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
+    }()
+    lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker(frame: .zero)
+        
+        datePicker.datePickerMode = .date
+        datePicker.timeZone = TimeZone.current
+        datePicker.locale = .autoupdatingCurrent
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat =  "dd.MM.yyyy"
+        let currentDate = Date()
+        let dateString = dateFormatter.string(from: currentDate)
+        self.dateString = dateString
+        datePicker.date = currentDate
+        
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.addTarget(self, action: #selector(handleDatePicker(sender:)), for: .valueChanged)
+        
+        return datePicker
+    }()
+    
+    lazy var toolbar: UIToolbar = {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(doneButtonAction))
+        
+        done.setTitleTextAttributes([
+            .foregroundColor: UIColor.link
+        ], for: .normal)
+        
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        return doneToolbar
     }()
 
     override func viewDidLoad() {
@@ -112,6 +148,8 @@ extension UserInfoViewController {
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
+        birthDateTextField.inputView = datePicker
+        birthDateTextField.inputAccessoryView = toolbar
         stackTextFields.addArrangedSubview(birthDateTextField)
     }
     func setEmailTextField() {
@@ -139,18 +177,7 @@ extension UserInfoViewController {
 }
 
 extension UserInfoViewController: UITextFieldDelegate {
-    func hideKeyboardWhenTappedAround() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
     @objc func signupButtonTapped() {
-        saveUserData()
-        handleBirthDateInput()
         let changePasswordVC = CreateChangePasswordViewController()
         changePasswordVC.title = "Создать пароль"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
@@ -158,78 +185,53 @@ extension UserInfoViewController: UITextFieldDelegate {
         navigationController?.show(changePasswordVC, sender: self)
     }
     
-    func saveUserData() {
-        print("Имя: \(viewModel.user.name)")
-        print("Фамилия: \(viewModel.user.lastName)")
-        print("Email: \(viewModel.user.email)")
-        print("Дата рождения: \(viewModel.user.birthDate)")
-        
-        viewModel.user.birthDate = birthDateTextField.text!
-        viewModel.user.name = nameTextField.text!
-        viewModel.user.lastName = lastNameTextField.text!
-        viewModel.user.email = emailTextField.text!
-    }
-    
-    func handleBirthDateInput() {
-        if let text = birthDateTextField.text, text.count == 8 {
-            let formattedText = "\(text.prefix(2)).\(text.dropFirst(2).prefix(2)).\(text.dropFirst(4))"
-            birthDateTextField.text = formattedText
-        }
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let currentText = birthDateTextField.text as NSString? else {
-            return false
-        }
-
-        let allowedCharacterSet = CharacterSet(charactersIn: "0123456789")
-        let characterSet = CharacterSet(charactersIn: string)
-        let isNumber = allowedCharacterSet.isSuperset(of: characterSet)
-        let newText = currentText.replacingCharacters(in: range, with: string)
-
-        if string.isEmpty {
-            return true
-        }
-
-        let newLength = newText.count
-        if isNumber && newLength <= 10 {
-            let formattedText = formatPhoneNumber(text: newText)
-            birthDateTextField.text = formattedText
-
-            if newLength == 1 {
-                birthDateTextField.placesolderToTop()
-            }
-        }
-
-        return false
-    }
-
-    
     @objc func textFieldDidChange(_ textField: UITextField) {
-        if !emailTextField.text!.isEmpty &&
-            !nameTextField.text!.isEmpty &&
-            !lastNameTextField.text!.isEmpty &&
-            !birthDateTextField.text!.isEmpty {
-            signupButton.setActive(true)
-            signupButton.addTarget(
-                self,
-                action: #selector(signupButtonTapped),
-                for: .touchUpInside
-            )
-        } else {
+        guard !nameTextField.text!.isEmpty,
+              !lastNameTextField.text!.isEmpty,
+              !birthDateTextField.text!.isEmpty,
+              !emailTextField.text!.isEmpty
+        else {
             signupButton.setActive(false)
             signupButton.removeTarget(nil, action: nil, for: .allEvents)
+            return
         }
+        
+        signupButton.setActive(true)
+        signupButton.addTarget(
+            self,
+            action: #selector(signupButtonTapped),
+            for: .touchUpInside
+        )
     }
     
-    func formatPhoneNumber(text: String) -> String {
-        var formattedText = text.replacingOccurrences(of: ".", with: "")
-        if formattedText.count >= 2 {
-            formattedText.insert(".", at: formattedText.index(formattedText.startIndex, offsetBy: 2))
-        }
-        if formattedText.count >= 5 {
-            formattedText.insert(".", at: formattedText.index(formattedText.startIndex, offsetBy: 5))
-        }
-        return formattedText
+    @objc func handleDatePicker(sender: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        
+        dateString = dateFormatter.string(from: sender.date)
+        dateFormat()
+        
+        textFieldDidChange(birthDateTextField)
+    }
+    
+    @objc func doneButtonAction(){
+        birthDateTextField.setTextToTextField(dateString)
+        textFieldDidChange(birthDateTextField)
+        birthDateTextField.resignFirstResponder()
+    }
+    
+    func dateFormat() {
+        birthDateTextField.setTextToTextField(dateString)
+    }
+}
+
+extension UserInfoViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

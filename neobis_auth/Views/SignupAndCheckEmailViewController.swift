@@ -54,7 +54,7 @@ class SignupAndCheckEmailViewController: UIViewController {
         let font = UIFont(name: "GothamPro-Medium", size: 14)
         label.font = font
         label.isHidden = true
-        label.text = "Данная почта уже зарегистривана"
+        label.text = "Введите корректную почту"
         label.textColor = .red
         label.numberOfLines = 0
         return label
@@ -70,14 +70,8 @@ class SignupAndCheckEmailViewController: UIViewController {
 extension SignupAndCheckEmailViewController {
     func setup() {
         view.backgroundColor = .white
+        
         emailTextField.delegate = self
-        
-        if isPasswordChange {
-            title = "Сброс пароля"
-        } else {
-            title = "Регистрация"
-        }
-        
         setNextButton()
         setTitleLabel()
         setEmailTextField()
@@ -132,22 +126,16 @@ extension SignupAndCheckEmailViewController {
 
 //MARK: Functionality
 extension SignupAndCheckEmailViewController: UITextFieldDelegate {
-    func hideKeyboardWhenTappedAround() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
     
     @objc func nextButtonTapped() {
         let updatedText = emailTextField.text ?? ""
         
         let alertVC = AlertViewController()
         alertVC.emailText = updatedText
-        alertVC.isPasswordChange = self.isPasswordChange
+        if isPasswordChange {
+            alertVC.isPasswordChange = self.isPasswordChange
+        }
+        isPasswordChange = false
         alertVC.modalPresentationStyle = .overFullScreen
         present(alertVC, animated: false)
     }
@@ -180,5 +168,16 @@ extension SignupAndCheckEmailViewController: UITextFieldDelegate {
             }
         }
         return true
+    }
+}
+
+extension SignupAndCheckEmailViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

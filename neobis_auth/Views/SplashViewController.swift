@@ -7,9 +7,13 @@
 
 import UIKit
 import SnapKit
+import UserNotifications
 
 //MARK: UI Elements
 class SplashViewController: UIViewController {
+    var isPasswordChanged = false
+    let notificationCenter = UNUserNotificationCenter.current()
+
     let logoImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -55,6 +59,12 @@ class SplashViewController: UIViewController {
         setupUI()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.customize()
+        
+        if isPasswordChanged {
+            notificationCenter.delegate = self
+            checkForPermission()
+            isPasswordChanged = false
+        }
     }
 }
 
@@ -112,12 +122,15 @@ extension SplashViewController {
             make.bottom.equalTo(view.snp.bottom).offset(-44)
         }
     }
+    
+    
 }
 
 //MARK: Functionality
 extension SplashViewController {
     @objc func signupButtonTapped() {
         let signupVC = SignupAndCheckEmailViewController()
+        signupVC.title = "Регистрация"
         navigationController?.show(signupVC, sender: self)
     }
     
@@ -126,3 +139,47 @@ extension SplashViewController {
         navigationController?.show(signinVC, sender: self)
     }
 }
+
+extension SplashViewController: UNUserNotificationCenterDelegate {
+    func checkForPermission() {
+        notificationCenter.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .authorized:
+                self.dispathNotification()
+            case .denied:
+                return
+            case .notDetermined:
+                self.notificationCenter.requestAuthorization(options: [.alert, .sound]) { didAllow, error in
+                    if didAllow {
+                        self.dispathNotification()
+                    }
+                }
+            default:
+                return
+            }
+        }
+    }
+    
+    func dispathNotification() {
+        let date = Date().addingTimeInterval(1)
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        let identifier = UUID().uuidString
+        let title = "Пароль успешно сброшен!"
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.sound = .default
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: [identifier])
+        notificationCenter.add(request) { (error) in
+            
+        }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .sound])
+    }
+}
+

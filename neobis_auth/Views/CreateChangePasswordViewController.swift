@@ -98,6 +98,9 @@ class CreateChangePasswordViewController: UIViewController {
 extension CreateChangePasswordViewController {
     func setup() {
         view.backgroundColor = .white
+        
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        
         setFirstPasswordTextField()
         setSecondPasswordTextField()
         setStackCaseLabels()
@@ -148,16 +151,6 @@ extension CreateChangePasswordViewController {
 }
 
 extension CreateChangePasswordViewController {
-    func hideKeyboardWhenTappedAround() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         var count = 0
         
@@ -207,41 +200,23 @@ extension CreateChangePasswordViewController {
     }
     
     @objc func nextButtonTapped() {
+        let splashVC = SplashViewController()
+        splashVC.modalPresentationStyle = .fullScreen
         if isPasswordChange {
-            
-                // Получите изображение из assets вашего проекта
-            if let imageURL = Bundle.main.url(forResource: "Bell", withExtension: "png") {
-                do {
-                        // Создайте UNNotificationAttachment
-                    let attachment = try UNNotificationAttachment(identifier: "image", url: imageURL, options: nil)
-                    
-                        // Создайте содержимое уведомления
-                    let content = UNMutableNotificationContent()
-                    content.title = "Заголовок уведомления"
-                    content.body = "Текст уведомления"
-                    content.sound = UNNotificationSound.default
-                    content.attachments = [attachment] // Добавьте изображение к уведомлению
-                    
-                        // Создайте запрос уведомления
-                    let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: nil)
-                    
-                        // Добавьте запрос уведомления в центр уведомлений
-                    UNUserNotificationCenter.current().add(request) { error in
-                        if let error = error {
-                            print("Ошибка при добавлении уведомления: \(error)")
-                        } else {
-                            print("Уведомление успешно добавлено")
-                        }
-                    }
-                } catch {
-                    print("Ошибка при создании вложения уведомления: \(error)")
-                }
-            }
-
+            splashVC.isPasswordChanged = true
         }
-        
-        let signinVC = SigninViewController()
-        signinVC.modalPresentationStyle = .fullScreen
-        present(signinVC, animated: true)
+        self.view.window?.rootViewController = UINavigationController(rootViewController: splashVC)
+        self.view.window?.makeKeyAndVisible()
+    }
+}
+
+extension CreateChangePasswordViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
