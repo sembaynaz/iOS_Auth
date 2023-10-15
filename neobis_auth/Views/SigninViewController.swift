@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 
 class SigninViewController: UIViewController {
-    let viewModel: UserViewModel
-    
     let logoImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Logo")
@@ -63,15 +61,6 @@ class SigninViewController: UIViewController {
         navigationController?.customize()
         
         setup()
-    }
-    
-    init(_ viewModel: UserViewModel = UserViewModel()) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
