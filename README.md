@@ -1,6 +1,5 @@
 # iOS_Auth
 
-# iOS_StopWatch
 <img width = "245" height = "500" src = "https://github.com/sembaynaz/iOS_Auth/assets/96616194/3cf5ff5e-37df-4262-abcc-3036e92683cf">
 <img width = "245" height = "500" src = "https://github.com/sembaynaz/iOS_Auth/assets/96616194/a37d7c73-ba9e-4993-831c-b5a2e5dc5cef">
 <img width = "245" height = "500" src = "https://github.com/sembaynaz/iOS_Auth/assets/96616194/e9a62614-cd71-4945-851b-ea61fc91a5f0">
